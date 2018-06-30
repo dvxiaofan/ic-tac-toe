@@ -3,15 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component {
-
-  render() {
+// 利用函数定义组件 修改 只有render方法的组件
+function Square(props) {
     return (
-      <button className="square" onClick={ () => this.props.onClick()}>
-        {this.props.value}
+      <button className="square" onClick={ props.onClick }>
+        {props.value}
       </button>
     );
-  }
 }
 
 class Board extends React.Component {
@@ -24,6 +22,7 @@ class Board extends React.Component {
 	}
 
 	handleClick(i) {
+		// 使用 .slice() 方法对已有的数组数据进行了浅拷贝，以此来防止对已有数据的改变
 		const squares = this.state.squares.slice();
 		squares[i] = 'X';
 		this.setState({ squares: squares });
