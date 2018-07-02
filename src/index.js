@@ -70,18 +70,19 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       history: [{
         squares: Array(9).fill(null),
       }],
+      setNumber: 0,
       xIsNext: true,
     }
   }
 
 	handleClick(i) {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.setNumber + 1);
     const current = history[history.length - 1];    
 		// 使用 .slice() 方法对已有的数组数据进行了浅拷贝，以此来防止对已有数据的改变
     const squares = current.squares.slice();
@@ -93,15 +94,34 @@ class Game extends React.Component {
       history: history.concat([{
         squares: squares
       }]),
+      setNumber: history.length,
       // 切换 xIsNext 的状态
-      xIsNext: !this.state.xIsNext
+      xIsNext: !this.state.xIsNext,
     });
-	}
+  }
+  
+  jumpTo(step) {
+    this.setState({
+      setNumber: step,
+      xIsNext: (step % 2) ? false : true,
+    })
+  }
 
   render() {
     const history = this.state.history;
-    const current = history[history.length - 1];
+    const current = history[this.state.setNumber];
     const winner = calculateWinner(current.squares);
+
+    const moves = history.map((step, move) => {
+      const desc = move ? 
+        'Move# ' + move :
+        'Game Start!';
+      return (
+        <li key={move}>
+          <a href='#' onClick={() => this.jumpTo(move)} >{desc}</a>
+        </li>
+      );
+    });
 
     let status;
     if (winner) {
@@ -119,7 +139,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{ status }</div>
-          <ol>{/* TODO */}</ol>
+          <ol>{ moves }</ol>
         </div>
       </div>
     );
