@@ -17,15 +17,21 @@ class Board extends React.Component {
 		super();
 		this.state = {
 			// 创建空数组存放数据
-			squares: Array(9).fill(null)
+      squares: Array(9).fill(null),
+      // 将X设置为先手
+      xIsNext: true
 		};
 	}
 
 	handleClick(i) {
 		// 使用 .slice() 方法对已有的数组数据进行了浅拷贝，以此来防止对已有数据的改变
 		const squares = this.state.squares.slice();
-		squares[i] = 'X';
-		this.setState({ squares: squares });
+		squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      // 切换 xIsNext 的状态
+      xIsNext: !this.state.xIsNext
+    });
 	}
 
   renderSquare(i) {
@@ -40,7 +46,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
       <div>
